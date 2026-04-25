@@ -113,6 +113,13 @@ export default function HomeScreen() {
     const list = [...sampiyonlar].sort((a, b) => b.yil - a.yil);
     return list[0];
   }, []);
+  const featuredChampion = useMemo(() => {
+    const winner = latestChampion?.kazanan?.toLocaleLowerCase('tr-TR') ?? '';
+    const match = pehlivanlar.find(
+      (p) => p.ad.toLocaleLowerCase('tr-TR') === winner,
+    );
+    return match ?? pehlivanlar.find((p) => p.id === 'orhan-okulu') ?? null;
+  }, [latestChampion]);
 
   const tile = Math.floor((width - tokens.space.lg * 2 - 12) / 2);
 
@@ -201,45 +208,107 @@ export default function HomeScreen() {
             Edirne Sarayiçi’nde asırlardır süren yağlı güreş geleneği: peşrev, cazgır manileri,
             davul‑zurna ve Altın Kemer… Er meydanını keşfet.
           </Text>
-
-          <View style={{ marginTop: 14 }}>
-            <GlassCard padding={14} radius={tokens.radius.xl} intensity={20} variant="goldFoil">
-              <Text style={{ color: tokens.color.gold, fontWeight: '900' }}>
-                Öne çıkan
-              </Text>
-              <Text style={{ color: tokens.color.text, fontWeight: '900', fontSize: 18, marginTop: 6 }}>
-                {latestChampion ? `${latestChampion.yil} Başpehlivanı` : 'Şampiyonlar'}
-              </Text>
-              <Text style={{ color: tokens.color.textMuted, marginTop: 6 }}>
-                {latestChampion?.kazanan ?? 'Arşive göz at.'}
-              </Text>
-            </GlassCard>
-          </View>
         </Animated.View>
 
         <View style={{ paddingHorizontal: tokens.space.lg, marginTop: 14 }}>
           <GlassCard padding={14} radius={tokens.radius.xl} intensity={20} variant="goldFoil">
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Text style={{ color: tokens.color.gold, fontWeight: '900' }}>
-                665. Kırkpınar’a kalan
-              </Text>
-              <Ionicons name="hourglass" size={18} color={tokens.color.gold} />
-            </View>
+            <Text style={{ color: tokens.color.text, fontWeight: '900', fontSize: 22, marginTop: 2 }}>
+              665. Tarihi Kırkpınar Yağlı{'\n'}Güreşleri
+            </Text>
+            <Text style={{ color: tokens.color.textMuted, marginTop: 8, fontWeight: '700' }}>
+              Sarayiçi Er Meydanı • Edirne
+            </Text>
 
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 12 }}>
-              <Image
-                source={require('../../assets/images/kirkpinar-countdown.gif')}
-                style={{ width: 64, height: 64, borderRadius: 14 }}
-              />
-              <View style={{ flex: 1 }}>
-                <Text style={{ color: tokens.color.text, fontWeight: '900', fontSize: 18 }}>
-                  {countdown.done ? 'Başladı!' : `${countdown.d}g ${countdown.h}s ${countdown.m}d ${countdown.s}sn`}
+            <View style={{ flexDirection: 'row', gap: 10, marginTop: 12, flexWrap: 'wrap' }}>
+              <View
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 12,
+                  borderRadius: 999,
+                  borderWidth: 1,
+                  borderColor: 'rgba(212,175,55,0.22)',
+                  backgroundColor: 'rgba(10,20,14,0.55)',
+                }}
+              >
+                <Text style={{ color: tokens.color.textMuted, fontWeight: '900', fontSize: 10, letterSpacing: 0.3 }}>
+                  UNESCO
                 </Text>
-                <Text style={{ color: tokens.color.textFaint, marginTop: 6 }}>
-                  3–5 Temmuz 2026 • Edirne
+                <Text style={{ color: tokens.color.text, fontWeight: '900', marginTop: 2 }}>
+                  Temsili Liste
+                </Text>
+              </View>
+              <View
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 12,
+                  borderRadius: 999,
+                  borderWidth: 1,
+                  borderColor: 'rgba(212,175,55,0.22)',
+                  backgroundColor: 'rgba(10,20,14,0.55)',
+                }}
+              >
+                <Text style={{ color: tokens.color.textMuted, fontWeight: '900', fontSize: 10, letterSpacing: 0.3 }}>
+                  ÖDÜL
+                </Text>
+                <Text style={{ color: tokens.color.text, fontWeight: '900', marginTop: 2 }}>
+                  Altın Kemer
                 </Text>
               </View>
             </View>
+
+            <View style={{ marginTop: 12 }}>
+              {countdown.done ? (
+                <View
+                  style={{
+                    paddingVertical: 16,
+                    borderRadius: 18,
+                    borderWidth: 1,
+                    borderColor: 'rgba(212,175,55,0.18)',
+                    backgroundColor: 'rgba(10,20,14,0.55)',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Text style={{ color: tokens.color.text, fontWeight: '900', fontSize: 20 }}>
+                    Başladı!
+                  </Text>
+                </View>
+              ) : (
+                <View style={{ flexDirection: 'row', gap: 10 }}>
+                  {(
+                    [
+                      { label: 'GÜN', value: countdown.d },
+                      { label: 'SAAT', value: countdown.h },
+                      { label: 'DAK', value: countdown.m },
+                      { label: 'SN', value: countdown.s },
+                    ] as const
+                  ).map((t) => (
+                    <View
+                      key={t.label}
+                      style={{
+                        flex: 1,
+                        paddingVertical: 12,
+                        borderRadius: 16,
+                        borderWidth: 1,
+                        borderColor: 'rgba(212,175,55,0.22)',
+                        backgroundColor: 'rgba(10,20,14,0.55)',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Text style={{ color: tokens.color.text, fontWeight: '900', fontSize: 22 }}>
+                        {t.value}
+                      </Text>
+                      <Text style={{ color: tokens.color.textMuted, fontWeight: '900', marginTop: 6, fontSize: 10, letterSpacing: 0.4 }}>
+                        {t.label}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
+
+            <Text style={{ color: tokens.color.textMuted, marginTop: 12, fontWeight: '700' }}>
+              İlk tur tahminleri kura sonrası kapanır.
+            </Text>
 
             <View style={{ flexDirection: 'row', gap: 10, marginTop: 12 }}>
               {['3 Tem', '4 Tem', '5 Tem'].map((x, i) => (
@@ -260,6 +329,68 @@ export default function HomeScreen() {
               ))}
             </View>
           </GlassCard>
+        </View>
+
+        <View style={{ paddingHorizontal: tokens.space.lg, marginTop: 12 }}>
+          <Pressable
+            onPress={() => {
+              void Haptics.selectionAsync();
+              if (featuredChampion?.id) {
+                router.push({ pathname: '/pehlivan/[id]', params: { id: featuredChampion.id } });
+                return;
+              }
+              router.push('/sampiyonlar');
+            }}
+            style={({ pressed }) => [{ transform: [{ scale: pressed ? 0.99 : 1 }] }]}
+          >
+            <GlassCard padding={0} radius={tokens.radius.xl} intensity={22} variant="goldFoil">
+              <View style={{ borderRadius: tokens.radius.xl, overflow: 'hidden' }}>
+                <View style={{ height: 118 }}>
+                  <Image
+                    source={
+                      featuredChampion?.fotograf ??
+                      require('../../assets/images/pehlivanlar-normalized/orhan-okulu.webp')
+                    }
+                    style={{ position: 'absolute', top: 0, right: 0, width: 170, height: 170, opacity: 0.95 }}
+                    resizeMode="cover"
+                  />
+                  <LinearGradient
+                    colors={['rgba(7,28,18,0.96)', 'rgba(7,28,18,0.62)', 'rgba(7,28,18,0.15)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0.4 }}
+                    style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}
+                  />
+                  <View style={{ padding: 14, paddingRight: 110 }}>
+                    <Text style={{ color: tokens.color.gold, fontWeight: '900' }}>Öne çıkan</Text>
+                    <Text style={{ color: tokens.color.text, fontWeight: '900', fontSize: 18, marginTop: 6 }}>
+                      {latestChampion ? `${latestChampion.yil} Başpehlivanı` : 'Şampiyonlar'}
+                    </Text>
+                    <Text style={{ color: tokens.color.textMuted, marginTop: 6, fontWeight: '800' }}>
+                      {featuredChampion?.ad ?? latestChampion?.kazanan ?? 'Arşive göz at.'}
+                    </Text>
+                  </View>
+                </View>
+
+                <View
+                  style={{
+                    paddingHorizontal: 14,
+                    paddingVertical: 12,
+                    borderTopWidth: 1,
+                    borderTopColor: 'rgba(212,175,55,0.12)',
+                    backgroundColor: 'rgba(10,20,14,0.40)',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Text style={{ color: tokens.color.textFaint, fontWeight: '700' }}>
+                    Detayı aç
+                  </Text>
+                  <Ionicons name="chevron-forward" size={18} color={tokens.color.gold} />
+                </View>
+              </View>
+            </GlassCard>
+          </Pressable>
         </View>
 
         <View style={{ paddingHorizontal: tokens.space.lg, marginTop: 14, gap: 12 }}>
